@@ -1,6 +1,16 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:scanner_direccions/src/pages/home_page.dart';
 
-void main() => runApp(MyApp());
+Future <void> main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+  } on CameraException catch (e) {
+    print("ERROR CAMARA");
+    print(e.description);
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
 
@@ -10,45 +20,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Scanner app',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Scanner app'),
-        ),
-        body: Center(
-          child:ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              ListTile(
-                leading: Icon(Icons.directions),
-                title: Text("direccion 1"),
-                subtitle: Text("subtitle text"),
-                trailing: Icon(Icons.arrow_right),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.directions),
-                title: Text("direccion 2"),
-                subtitle: Text("subtitle text"),
-                trailing: Icon(Icons.arrow_right),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.directions),
-                title: Text("direccion 2"),
-                subtitle: Text("subtitle text"),
-                trailing: Icon(Icons.arrow_right),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.camera_alt),
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-        ),
+      theme: ThemeData(
+        splashFactory: InkRipple.splashFactory,
+        visualDensity: VisualDensity.adaptivePlatformDensity
       ),
+      home: HomePage(),
+      initialRoute: '/home',
+      routes: {
+        '/home': (context) => HomePage(),
+      },
     );
   }
 
