@@ -80,8 +80,6 @@ class DBProvider {
   }
 
   /*
-
-
     
     TODO: usar Markers de google maps para pasar una lista de direciones lat lon
           usa la api de reverse geoapi para obtener la lat y long en base a una

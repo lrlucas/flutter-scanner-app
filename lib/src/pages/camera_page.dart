@@ -7,11 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scanner_direccions/src/pages/detail_page.dart';
 
-
-
 class CameraPage extends StatefulWidget {
-
-
   @override
   _CameraPageState createState() => _CameraPageState();
 }
@@ -21,26 +17,29 @@ class _CameraPageState extends State<CameraPage> {
   List<CameraDescription> cameras = [];
   dynamic errorCamera;
 
-
   @override
-  void initState()  {
+  void initState() {
     super.initState();
 
-    availableCameras().then((availableCameras){
-
+    availableCameras().then((availableCameras) {
       cameras = availableCameras;
-      
-      if (cameras.length > 0 ) {
-        _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
-        _cameraController.initialize()
+
+      if (cameras.length > 0) {
+        _cameraController =
+            CameraController(cameras[0], ResolutionPreset.medium);
+        _cameraController
+            .initialize()
             .then((_) => {
-              if (!mounted) {}
-              else {
-                setState((){
-                  errorCamera = null;
+                  if (!mounted)
+                    {}
+                  else
+                    {
+                      setState(() {
+                        errorCamera = null;
+                      })
+                    }
                 })
-              }
-        }).catchError((err) {
+            .catchError((err) {
           print("ERROR DE LA CAMARA");
           print(err.code);
           setState(() {
@@ -50,11 +49,10 @@ class _CameraPageState extends State<CameraPage> {
       } else {
         print("NO AVAILABLE CAMERA");
       }
-    }).catchError((err){
+    }).catchError((err) {
       print("ERROR AL INICIALIZAR LA CAMARA");
       print(err);
     });
-
   }
 
   @override
@@ -100,7 +98,6 @@ class _CameraPageState extends State<CameraPage> {
     }
     print("PATH $imagePath");
     return imagePath;
-
   }
 
   // !_cameraController.value.isInitialized
@@ -116,46 +113,41 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    return (!controller) ?
-      new Container(
-        color: Colors.white,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
-        :
-      new Stack(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: _cameraController.value.aspectRatio,
-            child: CameraPreview(_cameraController),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              alignment: AlignmentDirectional.bottomCenter,
-              child: RaisedButton.icon(
-                icon: Icon(Icons.camera),
-                label: Text("Click"),
-                onPressed: () async {
-                  await _takePicture().then((String path) {
-
-                    if (path != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (BuildContext context) => DetailPage(
-                            // imagePath: path,
-                            imagePath: "/data/user/0/com.example.scanner_direccions/app_flutter/Photos/Vision Images/image_Nov3,2020-21:51:40.jpg",
-                          ))
-                      );
-                    }
-
-                  });
-                },
-              ),
+    return (!controller)
+        ? new Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           )
-        ]
-      );
+        : new Stack(children: <Widget>[
+            AspectRatio(
+              aspectRatio: _cameraController.value.aspectRatio,
+              child: CameraPreview(_cameraController),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                alignment: AlignmentDirectional.bottomCenter,
+                child: RaisedButton.icon(
+                  icon: Icon(Icons.camera),
+                  label: Text("Click"),
+                  onPressed: () async {
+                    await _takePicture().then((String path) {
+                      if (path != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => DetailPage(
+                                      imagePath: path,
+                                      // imagePath: "/data/user/0/com.example.scanner_direccions/app_flutter/Photos/Vision Images/image_Nov3,2020-21:51:40.jpg",
+                                    )));
+                      }
+                    });
+                  },
+                ),
+              ),
+            )
+          ]);
   }
 }
