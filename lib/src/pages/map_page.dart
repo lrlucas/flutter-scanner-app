@@ -57,6 +57,8 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO: recibir una lista de markers para mostrarlos en el mapa
+    //      no procesar los marcadores en la pagina de mapa
     // markers.add(new Marker(
     //     markerId: MarkerId("geo-location"),
     //     position: LatLng(51.4825575, -0.0333935)));
