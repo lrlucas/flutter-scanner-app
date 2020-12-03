@@ -140,7 +140,8 @@ class _CameraPageState extends State<CameraPage> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) => DetailPage(
                                       imagePath: path,
-                                      // imagePath: "/data/user/0/com.example.scanner_direccions/app_flutter/Photos/Vision Images/image_Nov3,2020-21:51:40.jpg",
+                                      // imagePath:
+                                      //     "/data/user/0/com.example.scanner_direccions/app_flutter/Photos/Vision Images/image_Nov3,2020-21:51:40.jpg",
                                     )));
                       }
                     });

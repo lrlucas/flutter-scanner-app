@@ -1,22 +1,27 @@
 import 'dart:async';
-
+import 'package:geolocator/geolocator.dart' as Geolocator;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scanner_direccions/src/bloc/my_position/my_position_bloc.dart';
+import 'package:scanner_direccions/src/models/DirectionModel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MapPage extends StatefulWidget {
-  final List<String> direccions;
-  MapPage(this.direccions);
+  // Set<Marker> markers = new Set<Marker>();
+  Future<List<DirectionModel>> directions;
+  // MapPage(this.markers);
+  MapPage(this.directions);
   @override
-  _MapPageState createState() => _MapPageState(direccions);
+  _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
-  final List<String> address;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Set<Marker> markers = new Set<Marker>();
-
-  _MapPageState(this.address);
+  _MapPageState();
 
   final CameraPosition initialPoint = CameraPosition(
     target: LatLng(51.453461, -0.008410),
@@ -34,56 +39,80 @@ class _MapPageState extends State<MapPage> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 
-  void calculateCoordenade(List<String> direc) async {
-    direc.forEach((element) async {
-      print(element);
-      var response = await Geocoder.local.findAddressesFromQuery(element);
-      print(
-          "${response.first.coordinates.latitude} - ${response.first.coordinates.longitude}");
-
-      markers.add(new Marker(
-          markerId: MarkerId("geo-location"),
-          position: LatLng(response.first.coordinates.latitude,
-              response.first.coordinates.longitude)));
+  reCalculateLatLong() async {
+    var res = await widget.directions;
+    res.asMap().forEach((key, value) async {
+      var response = await Geocoder.local.findAddressesFromQuery(value.value);
+      setState(() {
+        markers.add(new Marker(
+            infoWindow:
+                InfoWindow(title: value.id.toString(), snippet: value.value),
+            markerId: MarkerId(value.id.toString()),
+            position: LatLng(response.first.coordinates.latitude,
+                response.first.coordinates.longitude)));
+      });
     });
+
+    // Geolocator.ge
+
+    // var currentLocation = await Geolocator.
+    setState(() {
+      markers.add(new Marker(
+          infoWindow: InfoWindow(title: "My current position"),
+          markerId: MarkerId("current_user_position"),
+          position: LatLng(
+              51.495924, -0.063451) // todo: aqui cambiar mi current position
+          ));
+    });
+
+    // widget.direc.asMap().forEach((key, value) async {
+    //   var response = await Geocoder.local.findAddressesFromQuery(value);
+    //   setState(() {
+    //     markers.add(new Marker(
+    //         markerId: MarkerId(key.toString()),
+    //         position: LatLng(response.first.coordinates.latitude,
+    //             response.first.coordinates.longitude)));
+    //   });
+    // });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+    reCalculateLatLong();
+    context.read<MyPositionBloc>().iniciarSeguimiento();
     super.initState();
-    calculateCoordenade(widget.direccions);
+  }
+
+  @override
+  void dispose() {
+    context?.read<MyPositionBloc>()?.cancelarSeguimiento();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //TODO: recibir una lista de markers para mostrarlos en el mapa
-    //      no procesar los marcadores en la pagina de mapa
-    // markers.add(new Marker(
-    //     markerId: MarkerId("geo-location"),
-    //     position: LatLng(51.4825575, -0.0333935)));
-    // markers.add(new Marker(
-    //     markerId: MarkerId("geo-location"),
-    //     position: LatLng(51.4536096, -0.0082463)));
-
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Mapa Direccion"),
       ),
       body: GoogleMap(
+        mapToolbarEnabled:
+            true, // todo: testear con mas direciones para ver si se habren todas en gogole maps
         zoomControlsEnabled: false,
         myLocationButtonEnabled: true,
         mapType: MapType.normal,
         markers: markers,
         initialCameraPosition: initialPoint,
+        myLocationEnabled: true,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.gps_fixed_outlined),
-        onPressed: () {},
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.gps_fixed_outlined),
+      //   onPressed: () {},
+      // ),
     );
   }
 }

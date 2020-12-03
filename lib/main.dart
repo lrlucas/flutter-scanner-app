@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scanner_direccions/src/bloc/my_position/my_position_bloc.dart';
 import 'package:scanner_direccions/src/pages/home_page.dart';
 
 Future <void> main() async {
@@ -17,18 +19,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Scanner app',
-      theme: ThemeData(
-        splashFactory: InkRipple.splashFactory,
-        visualDensity: VisualDensity.adaptivePlatformDensity
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => MyPositionBloc(),)
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Scanner app',
+        theme: ThemeData(
+          splashFactory: InkRipple.splashFactory,
+          visualDensity: VisualDensity.adaptivePlatformDensity
+        ),
+        home: HomePage(),
+        initialRoute: '/home',
+        routes: {
+          '/home': (context) => HomePage(),
+        },
       ),
-      home: HomePage(),
-      initialRoute: '/home',
-      routes: {
-        '/home': (context) => HomePage(),
-      },
     );
   }
 
