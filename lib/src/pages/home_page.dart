@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scanner_direccions/src/bloc/direction_bloc.dart';
 import 'package:scanner_direccions/src/models/DirectionModel.dart';
 import 'package:scanner_direccions/src/models/DirectionsModel.dart';
 import 'package:scanner_direccions/src/pages/camera_page.dart';
 import 'package:scanner_direccions/src/pages/edit_page.dart';
+import 'package:scanner_direccions/src/pages/map_page.dart';
+
+import 'dart:developer' as developer;
+
 // import 'package:scanner_direccions/src/providers/db_provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final directionBloc = new DirectionsBloc();
+  Set<Marker> markers = new Set<Marker>();
 
   @override
   void initState() {
@@ -28,6 +35,27 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
   }
+
+  // Future<void> calculateCoordenades(BuildContext context) async {
+  //   const direc = [
+  //     "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM",
+  //     "120 A Hither Green Lane  SE1 36QA"
+  //   ];
+  //   direc.forEach((element) async {
+  //     var response = await Geocoder.local.findAddressesFromQuery(element);
+  //     markers.add(new Marker(
+  //         markerId: MarkerId("geo-position"),
+  //         position: LatLng(response.first.coordinates.latitude,
+  //             response.first.coordinates.longitude)));
+  //   });
+
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) =>
+  //             MapPage(direc)), // TODO: mandar la lista aca de direcciones
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +94,24 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                   );
-                })
+                }),
+            IconButton(
+              icon: Icon(Icons.map),
+              enableFeedback: true,
+              tooltip: "Open all direccion in map",
+              onPressed: () async {
+                // await this.calculateCoordenades(context);
+                // const direc = [
+                //   "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM",
+                //   "120 A Hither Green Lane  SE1 36QA"
+                // ];
+                var res = directionBloc.getAllDirection2();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MapPage(res)),
+                );
+              },
+            )
           ],
         ),
         body: StreamBuilder<List<DirectionModel>>(
@@ -116,7 +161,8 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: ListTile(
                   leading: Icon(Icons.directions),
-                  title: Text(directions[index].value),
+                  title: Text("ID: ${directions[index].id}"),
+                  subtitle: Text(directions[index].value),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
                     Navigator.push(
@@ -140,22 +186,28 @@ class _HomePageState extends State<HomePage> {
         //       ListTile(
         //         leading: Icon(Icons.directions),
         //         title: Text("direccion 1"),
-        //         subtitle: Text("subtitle text"),
+        //         subtitle: Text(
+        //             "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM"),
         //         trailing: Icon(Icons.arrow_right),
         //         onTap: () {
-        //           Map<String, dynamic> map = {
-        //             "id": 1,
-        //             'value': 'texto escaneado aaaa'
-        //           };
-        //           DirectionModel model = new DirectionModel.fromJson(map);
-        //           Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) => EditPage(
-        //                       directionModel: model,
-        //                     )),
-        //           );
+        //           // Map<String, dynamic> map = {
+        //           //   "id": 1,
+        //           //   'value':
+        //           //       'COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM'
+        //           // };
+        //           // DirectionModel model = new DirectionModel.fromJson(map);
+        //           // Navigator.push(
+        //           //   context,
+        //           //   MaterialPageRoute(builder: (context) => MapPage()),
+        //           // );
         //         },
+        //       ),
+        //       ListTile(
+        //         leading: Icon(Icons.directions),
+        //         title: Text("direccion 2"),
+        //         subtitle: Text("120 A Hither Green Lane  SE1 36QA"),
+        //         trailing: Icon(Icons.arrow_right),
+        //         onTap: () {},
         //       ),
         //     ],
         //   ),

@@ -29,6 +29,10 @@ class DirectionsBloc {
     _directionController.sink.add(await DBProvider.db.getAllDirections());
   }
 
+  Future<List<DirectionModel>> getAllDirection2() async {
+    return await DBProvider.db.getAllDirections();
+  }
+
   createDirection(DirectionModel model) async {
     await DBProvider.db.createDirection(model);
     getAllDirections();
