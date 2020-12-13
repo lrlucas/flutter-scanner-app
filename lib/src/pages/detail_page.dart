@@ -82,6 +82,8 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   void initState() {
+    print("PATH");
+    print(this.path);
     super.initState();
     _initializeVision();
   }
@@ -117,9 +119,13 @@ class _DetailPageState extends State<DetailPage> {
                 child: Text("Save"),
                 onPressed: text.length > 0
                     ? () async {
-                        var direction = DirectionModel(value: text);
-                        // var res = await DBProvider.db.createDirection(direction);
+                        var directionIdContador = directionBloc.getContador();
+                        var direction = DirectionModel(
+                            value: text,
+                            directionId: directionIdContador
+                        );
                         await directionBloc.createDirection(direction);
+                        directionBloc.addContador();
                         final snackBar = SnackBar(
                           content: Text('Scanner Saved successful'),
                           duration: Duration(seconds: 3),

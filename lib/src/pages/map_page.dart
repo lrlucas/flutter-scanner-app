@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'package:geolocator/geolocator.dart' as Geolocator;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scanner_direccions/src/bloc/my_position/my_position_bloc.dart';
 import 'package:scanner_direccions/src/models/DirectionModel.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MapPage extends StatefulWidget {
-  // Set<Marker> markers = new Set<Marker>();
-  Future<List<DirectionModel>> directions;
-  // MapPage(this.markers);
+  final Future<List<DirectionModel>> directions;
   MapPage(this.directions);
   @override
   _MapPageState createState() => _MapPageState();
@@ -46,46 +40,23 @@ class _MapPageState extends State<MapPage> {
       setState(() {
         markers.add(new Marker(
             infoWindow:
-                InfoWindow(title: value.id.toString(), snippet: value.value),
+                InfoWindow(title: value.directionId.toString(), snippet: value.value),
             markerId: MarkerId(value.id.toString()),
             position: LatLng(response.first.coordinates.latitude,
                 response.first.coordinates.longitude)));
       });
     });
 
-    // Geolocator.ge
-
-    // var currentLocation = await Geolocator.
-    setState(() {
-      markers.add(new Marker(
-          infoWindow: InfoWindow(title: "My current position"),
-          markerId: MarkerId("current_user_position"),
-          position: LatLng(
-              51.495924, -0.063451) // todo: aqui cambiar mi current position
-          ));
-    });
-
-    // widget.direc.asMap().forEach((key, value) async {
-    //   var response = await Geocoder.local.findAddressesFromQuery(value);
-    //   setState(() {
-    //     markers.add(new Marker(
-    //         markerId: MarkerId(key.toString()),
-    //         position: LatLng(response.first.coordinates.latitude,
-    //             response.first.coordinates.longitude)));
-    //   });
-    // });
   }
 
   @override
   void initState() {
     reCalculateLatLong();
-    context.read<MyPositionBloc>().iniciarSeguimiento();
     super.initState();
   }
 
   @override
   void dispose() {
-    context?.read<MyPositionBloc>()?.cancelarSeguimiento();
     super.dispose();
   }
 
@@ -97,8 +68,7 @@ class _MapPageState extends State<MapPage> {
         title: Text("Mapa Direccion"),
       ),
       body: GoogleMap(
-        mapToolbarEnabled:
-            true, // todo: testear con mas direciones para ver si se habren todas en gogole maps
+        mapToolbarEnabled: true,
         zoomControlsEnabled: false,
         myLocationButtonEnabled: true,
         mapType: MapType.normal,

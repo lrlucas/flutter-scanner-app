@@ -28,7 +28,8 @@ class DBProvider {
         onCreate: (Database db, int version) async {
       await db.execute('CREATE TABLE Scans ('
           'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-          'value TEXT'
+          'value TEXT,'
+          'directionId INTEGER'
           ')');
     });
   }
@@ -57,6 +58,14 @@ class DBProvider {
     return list;
   }
 
+  // retorna el numero de filas en la tabla Scans
+  getCount() async {
+    final db = await database;
+    final res = await db.execute('SELECT COUNT(*) FROM Scans;');
+    return res;
+  }
+
+
   // actualizar registro
   Future<int> updateScan(DirectionModel newDirection) async {
     final db = await database;
@@ -79,24 +88,6 @@ class DBProvider {
     return res;
   }
 
-  /*
-    
-    TODO: usar Markers de google maps para pasar una lista de direciones lat lon
-          usa la api de reverse geoapi para obtener la lat y long en base a una
-          direccion y esas lat y long mandarlo a la los markers de google maps
 
-    TODO: al abrir el mapa con todas las direcciones talvez sea necesario un servicio de terceros
-      para obtener las coordenadas y luego recien con las coordenads abrir el mapa con
-      los marcadores
-  *
-  * TODO: desde Home tengo que mandar a mostrar en el mapa todas las direcciones scaneadas
-  *
-  *
-  * TODO: revisar una UI mas intuitiva
-  *
-    TODO: revisar integracion con google maps o otro servicio de mapas
-  *
-  *
-  * */
 
 }

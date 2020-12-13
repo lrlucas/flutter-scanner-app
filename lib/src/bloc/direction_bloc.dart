@@ -6,6 +6,8 @@ import 'package:scanner_direccions/src/providers/db_provider.dart';
 class DirectionsBloc {
   static final DirectionsBloc _singleton = new DirectionsBloc._internal();
 
+  int contador = 1;
+
   factory DirectionsBloc() {
     return _singleton;
   }
@@ -25,12 +27,29 @@ class DirectionsBloc {
     _directionController?.close();
   }
 
+  /* Contador */
+  int getContador() {
+    return contador;
+  }
+
+  void addContador() {
+    contador++;
+  }
+
+  void deleteContador() {
+    contador = 1;
+  }
+
   getAllDirections() async {
     _directionController.sink.add(await DBProvider.db.getAllDirections());
   }
 
   Future<List<DirectionModel>> getAllDirection2() async {
     return await DBProvider.db.getAllDirections();
+  }
+
+  getCount() async {
+    return await DBProvider.db.getCount();
   }
 
   createDirection(DirectionModel model) async {

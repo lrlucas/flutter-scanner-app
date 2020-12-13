@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scanner_direccions/src/bloc/direction_bloc.dart';
 import 'package:scanner_direccions/src/models/DirectionModel.dart';
-import 'package:scanner_direccions/src/models/DirectionsModel.dart';
 import 'package:scanner_direccions/src/pages/camera_page.dart';
 import 'package:scanner_direccions/src/pages/edit_page.dart';
 import 'package:scanner_direccions/src/pages/map_page.dart';
 
-import 'dart:developer' as developer;
 
-// import 'package:scanner_direccions/src/providers/db_provider.dart';
 
 class HomePage extends StatefulWidget {
   final DirectionModel directionModel;
@@ -36,37 +31,15 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  // Future<void> calculateCoordenades(BuildContext context) async {
-  //   const direc = [
-  //     "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM",
-  //     "120 A Hither Green Lane  SE1 36QA"
-  //   ];
-  //   direc.forEach((element) async {
-  //     var response = await Geocoder.local.findAddressesFromQuery(element);
-  //     markers.add(new Marker(
-  //         markerId: MarkerId("geo-position"),
-  //         position: LatLng(response.first.coordinates.latitude,
-  //             response.first.coordinates.longitude)));
-  //   });
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) =>
-  //             MapPage(direc)), // TODO: mandar la lista aca de direcciones
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     directionBloc.getAllDirections();
-
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Scanner app'),
+          title: const Text('Scanner app'),
           actions: [
             IconButton(
                 icon: Icon(Icons.delete_forever),
@@ -83,6 +56,7 @@ class _HomePageState extends State<HomePage> {
                             child: const Text("Delete all items"),
                             onPressed: () {
                               directionBloc.deleteAllDirections();
+                              directionBloc.deleteContador();
                               Navigator.of(context).pop(true);
                             },
                           ),
@@ -161,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: ListTile(
                   leading: Icon(Icons.directions),
-                  title: Text("ID: ${directions[index].id}"),
+                  title: Text("ID: ${directions[index].directionId} --- total: 123"),
                   subtitle: Text(directions[index].value),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
