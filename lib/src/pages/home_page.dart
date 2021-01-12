@@ -31,6 +31,44 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget showMenuLanguage() {
+    return PopupMenuButton<int>(
+      initialValue: 0,
+      tooltip: "Change Language",
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+      icon: Icon(Icons.language, semanticLabel: "Change language"),
+      onCanceled: () {
+        print("OnCanceled");
+      },
+      onSelected: (int value) {
+        print("onSelected $value");
+      },
+      offset: Offset(0.0, 20.0),
+     itemBuilder: (context) => [
+       PopupMenuItem(
+         child: Text("English"),
+         value: 0,
+       ),
+       PopupMenuItem(
+         child: Text("Spanish"),
+         value: 1,
+       ),
+       PopupMenuItem(
+         child: Text("Bulgarian"),
+         value: 2,
+       ),
+       PopupMenuItem(
+         child: Text("Romanian"),
+         value: 3,
+       ),
+       PopupMenuItem(
+         child: Text("Portuguese"),
+         value: 4,
+       ),
+     ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     directionBloc.getAllDirections();
@@ -39,18 +77,20 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Scanner app'),
+          centerTitle: true,
+          leading: showMenuLanguage(),
+          // title: const Text('Scanner app'),
           actions: [
             IconButton(
-                icon: Icon(Icons.delete_forever),
+                icon: const Icon(Icons.delete_forever),
                 onPressed: () async {
                   return await showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Delete all confirmation"),
+                        title: const Text("Delete all confirmation"),
                         content:
-                            Text("Are you sure you want to delete all items?"),
+                           const Text("Are you sure you want to delete all items?"),
                         actions: <Widget>[
                           FlatButton(
                             child: const Text("Delete all items"),
@@ -70,15 +110,10 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
             IconButton(
-              icon: Icon(Icons.map),
+              icon: const Icon(Icons.map),
               enableFeedback: true,
               tooltip: "Open all direccion in map",
               onPressed: () async {
-                // await this.calculateCoordenades(context);
-                // const direc = [
-                //   "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM",
-                //   "120 A Hither Green Lane  SE1 36QA"
-                // ];
                 var res = directionBloc.getAllDirection2();
                 Navigator.push(
                   context,
@@ -97,7 +132,7 @@ class _HomePageState extends State<HomePage> {
             final directions = snapshot.data;
             if (directions.length == 0) {
               return Center(
-                child: Text("No records"),
+                child: const Text("No records"),
               );
             }
             return ListView.builder(
@@ -135,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: ListTile(
                   leading: Icon(Icons.directions),
-                  title: Text("ID: ${directions[index].directionId} --- total: 123"),
+                  title: Text("ID: ${directions[index].directionId}"),
                   subtitle: Text(directions[index].value),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
@@ -153,42 +188,9 @@ class _HomePageState extends State<HomePage> {
           },
         ),
 
-        // body: Center(
-        //   child: ListView(
-        //     physics: BouncingScrollPhysics(),
-        //     children: [
-        //       ListTile(
-        //         leading: Icon(Icons.directions),
-        //         title: Text("direccion 1"),
-        //         subtitle: Text(
-        //             "COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM"),
-        //         trailing: Icon(Icons.arrow_right),
-        //         onTap: () {
-        //           // Map<String, dynamic> map = {
-        //           //   "id": 1,
-        //           //   'value':
-        //           //       'COURT FLAT 12 GUILLEM0T COURT TAYLOR CLOSE SEB 5UU LONDON UNITED KINGDOM'
-        //           // };
-        //           // DirectionModel model = new DirectionModel.fromJson(map);
-        //           // Navigator.push(
-        //           //   context,
-        //           //   MaterialPageRoute(builder: (context) => MapPage()),
-        //           // );
-        //         },
-        //       ),
-        //       ListTile(
-        //         leading: Icon(Icons.directions),
-        //         title: Text("direccion 2"),
-        //         subtitle: Text("120 A Hither Green Lane  SE1 36QA"),
-        //         trailing: Icon(Icons.arrow_right),
-        //         onTap: () {},
-        //       ),
-        //     ],
-        //   ),
-        // ),
 
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.camera_alt),
+          child: const Icon(Icons.camera_alt),
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => CameraPage()));

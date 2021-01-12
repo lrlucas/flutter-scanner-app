@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -41,7 +40,6 @@ class _CameraPageState extends State<CameraPage> {
                 })
             .catchError((err) {
           print("ERROR DE LA CAMARA");
-          print(err.code);
           setState(() {
             errorCamera = err;
           });
@@ -50,7 +48,6 @@ class _CameraPageState extends State<CameraPage> {
         print("NO AVAILABLE CAMERA");
       }
     }).catchError((err) {
-      print("ERROR AL INICIALIZAR LA CAMARA");
       print(err);
     });
   }
@@ -64,7 +61,6 @@ class _CameraPageState extends State<CameraPage> {
   Future<String> _takePicture() async {
     // Checking whether the controller is initialized
     if (!_cameraController.value.isInitialized) {
-      print("Controller is not initialized");
       return null;
     }
     // Formatting Date and Time
@@ -82,21 +78,16 @@ class _CameraPageState extends State<CameraPage> {
     await Directory(visionDir).create(recursive: true);
     final String imagePath = '$visionDir/image_$formattedDateTime.jpg';
 
-    // Checking whether the picture is being taken
-    // to prevent execution of the function again
-    // if previous execution has not ended
+
     if (_cameraController.value.isTakingPicture) {
-      print("Processing is in progress...");
       return null;
     }
 
     try {
       await _cameraController.takePicture(imagePath);
     } on CameraException catch (e) {
-      print("CAMERA EXCEPTION $e");
       return null;
     }
-    print("PATH $imagePath");
     return imagePath;
   }
 

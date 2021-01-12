@@ -82,8 +82,6 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   void initState() {
-    print("PATH");
-    print(this.path);
     super.initState();
     _initializeVision();
   }
@@ -93,13 +91,13 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
-        title: Text("Detail page"),
+        title: const Text("Detail page"),
         centerTitle: true,
       ),
       body: Center(
           child: Column(
         children: [
-          Divider(), // todo: no me gusta como queda el borde, revisar otras opciones
+          Divider(),
           Card(
             child: TextField(
               controller: _controller,
@@ -135,7 +133,7 @@ class _DetailPageState extends State<DetailPage> {
                     : null,
               ),
               RaisedButton(
-                child: Text("Back to Home"),
+                child: const Text("Back to Home"),
                 onPressed: text.length > 0
                     ? () {
                         Navigator.of(context).pushReplacementNamed('/home');
